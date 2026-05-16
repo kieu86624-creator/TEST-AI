@@ -1,0 +1,1 @@
+export function LoadingSkeleton(){return <div className="space-y-4">{[1,2,3].map(i=><div key={i} className="card animate-pulse p-5"><div className="mb-4 h-5 w-1/3 rounded bg-slate-100"/><div className="h-20 rounded-2xl bg-slate-100"/></div>)}</div>}

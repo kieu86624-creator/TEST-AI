@@ -1,0 +1,2 @@
+import type { Comment } from '../types';
+export function CommentList({comments}:{comments:Comment[]}){if(!comments.length)return <p className="text-sm text-slate-400">Chưa có bình luận. Hãy mở đầu cuộc trao đổi.</p>;return <div className="space-y-3">{comments.map(c=><div key={c.id} className="flex gap-3"><img src={c.author.avatar} className="h-8 w-8 rounded-full"/><div className="rounded-2xl bg-mist px-4 py-2"><p className="text-sm font-bold">{c.author.name}</p><p className="text-sm text-slate-600">{c.content}</p></div></div>)}</div>}

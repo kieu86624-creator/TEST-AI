@@ -1,0 +1,2 @@
+import { Router } from 'express';import { applyProject, createProject, getProject, getProjects } from '../controllers/projectController.js';import { requireAuth } from '../middleware/auth.js';
+export const projectRoutes = Router(); projectRoutes.get('/', requireAuth, getProjects); projectRoutes.post('/', requireAuth, createProject); projectRoutes.get('/:id', requireAuth, getProject); projectRoutes.post('/:id/apply', requireAuth, applyProject);

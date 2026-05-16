@@ -1,0 +1,2 @@
+import { Header } from '../components/Header';import { RightSidebar } from '../components/RightSidebar';import { Sidebar } from '../components/Sidebar';
+export function AppLayout({children}:{children:React.ReactNode}){return <div><Header/><main className="mx-auto flex max-w-[1200px] gap-6 px-4 pb-24 pt-24"><Sidebar/><section className="min-w-0 flex-1">{children}</section><RightSidebar/></main></div>}

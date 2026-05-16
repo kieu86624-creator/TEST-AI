@@ -1,0 +1,2 @@
+import { Router } from 'express';import { acceptConnection, myConnections, requestConnection } from '../controllers/connectionController.js';import { requireAuth } from '../middleware/auth.js';
+export const connectionRoutes = Router(); connectionRoutes.post('/request', requireAuth, requestConnection); connectionRoutes.post('/:id/accept', requireAuth, acceptConnection); connectionRoutes.get('/me', requireAuth, myConnections);
