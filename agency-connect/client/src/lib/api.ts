@@ -1,0 +1,3 @@
+const API = import.meta.env.VITE_API_URL || '/api';
+export async function api<T>(path:string, options:RequestInit={}){ const token=localStorage.getItem('agencyconnect_token'); const res=await fetch(`${API}${path}`,{...options,credentials:'include',headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{ }),...(options.headers||{})}}); const data=await res.json().catch(()=>null); if(!res.ok) throw new Error(data?.error?.message||'Có lỗi xảy ra'); return data as T; }
+export const authApi = { login:(body:any)=>api<any>('/auth/login',{method:'POST',body:JSON.stringify(body)}), register:(body:any)=>api<any>('/auth/register',{method:'POST',body:JSON.stringify(body)}), me:()=>api<any>('/auth/me') };

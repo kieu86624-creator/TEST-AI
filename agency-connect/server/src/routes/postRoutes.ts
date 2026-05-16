@@ -1,0 +1,2 @@
+import { Router } from 'express';import { addComment, createPost, getComments, getPosts, toggleLike } from '../controllers/postController.js';import { requireAuth } from '../middleware/auth.js';
+export const postRoutes = Router(); postRoutes.get('/', requireAuth, getPosts); postRoutes.post('/', requireAuth, createPost); postRoutes.post('/:id/like', requireAuth, toggleLike); postRoutes.post('/:id/comments', requireAuth, addComment); postRoutes.get('/:id/comments', requireAuth, getComments);

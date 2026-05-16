@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom';import { Logo } from '../components/Logo';import { RegisterForm } from '../components/RegisterForm';
+export function RegisterPage(){return <main className="min-h-screen bg-mist p-6"><div className="mx-auto mb-8 flex max-w-5xl items-center justify-between"><Link to="/login"><Logo/></Link><Link className="btn-outline" to="/login">Đã có tài khoản</Link></div><RegisterForm/></main>}

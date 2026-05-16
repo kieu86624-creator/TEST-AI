@@ -1,0 +1,4 @@
+import { createContext, useContext, useState } from 'react';
+type Toast={id:number;type:'success'|'error';message:string}; const Ctx=createContext<{push:(message:string,type?:Toast['type'])=>void}>({push:()=>{}});
+export function ToastProvider({children}:{children:React.ReactNode}){ const [toasts,setToasts]=useState<Toast[]>([]); const push=(message:string,type:Toast['type']='success')=>{const id=Date.now(); setToasts(t=>[...t,{id,type,message}]); setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),3200)}; return <Ctx.Provider value={{push}}>{children}<div className="fixed right-4 top-4 z-50 space-y-3">{toasts.map(t=><div key={t.id} className={`rounded-2xl px-4 py-3 text-sm font-semibold shadow-soft ${t.type==='success'?'bg-navy text-white':'bg-rose-50 text-rose-700'}`}>{t.message}</div>)}</div></Ctx.Provider> }
+export const useToast=()=>useContext(Ctx);

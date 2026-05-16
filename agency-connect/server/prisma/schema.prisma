@@ -1,0 +1,38 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "sqlite" url = env("DATABASE_URL") }
+
+enum UserRole { AGENCY BRAND FREELANCER CONSULTANT }
+enum ConnectionStatus { PENDING ACCEPTED REJECTED }
+enum ProjectStatus { OPEN IN_REVIEW CLOSED }
+
+model User {
+  id String @id @default(cuid())
+  name String
+  email String @unique
+  passwordHash String
+  role UserRole
+  avatar String?
+  coverImage String?
+  bio String?
+  companyName String?
+  website String?
+  location String?
+  createdAt DateTime @default(now())
+  posts Post[]
+  comments Comment[]
+  likes Like[]
+  agencyProfile AgencyProfile?
+  projects Project[]
+  sentMessages Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  requestedConnections Connection[] @relation("RequestedConnections")
+  receivedConnections Connection[] @relation("ReceivedConnections")
+}
+
+model Post { id String @id @default(cuid()) authorId String content String tags String createdAt DateTime @default(now()) author User @relation(fields:[authorId], references:[id], onDelete:Cascade) comments Comment[] likes Like[] }
+model Comment { id String @id @default(cuid()) postId String authorId String content String createdAt DateTime @default(now()) post Post @relation(fields:[postId], references:[id], onDelete:Cascade) author User @relation(fields:[authorId], references:[id], onDelete:Cascade) }
+model Like { id String @id @default(cuid()) postId String userId String post Post @relation(fields:[postId], references:[id], onDelete:Cascade) user User @relation(fields:[userId], references:[id], onDelete:Cascade) @@unique([postId,userId]) }
+model Connection { id String @id @default(cuid()) requesterId String receiverId String status ConnectionStatus @default(PENDING) requester User @relation("RequestedConnections", fields:[requesterId], references:[id], onDelete:Cascade) receiver User @relation("ReceivedConnections", fields:[receiverId], references:[id], onDelete:Cascade) @@unique([requesterId,receiverId]) }
+model AgencyProfile { id String @id @default(cuid()) userId String @unique services String industries String minBudget Int teamSize String rating Float @default(5) portfolio String user User @relation(fields:[userId], references:[id], onDelete:Cascade) }
+model Project { id String @id @default(cuid()) ownerId String title String description String budget String deadline DateTime skills String status ProjectStatus @default(OPEN) owner User @relation(fields:[ownerId], references:[id], onDelete:Cascade) }
+model Message { id String @id @default(cuid()) senderId String receiverId String content String createdAt DateTime @default(now()) sender User @relation("SentMessages", fields:[senderId], references:[id], onDelete:Cascade) receiver User @relation("ReceivedMessages", fields:[receiverId], references:[id], onDelete:Cascade) }

@@ -1,0 +1,9 @@
+import type { Request, Response } from 'express';
+import { z } from 'zod';
+import { prisma } from '../prisma/client.js';
+const include = { author:{ select:{ id:true,name:true,role:true,companyName:true,avatar:true }}, comments:{ include:{ author:{ select:{ id:true,name:true,avatar:true }}}, orderBy:{ createdAt:'asc' as const }}, likes:true };
+export async function getPosts(_req: Request, res: Response) { const posts = await prisma.post.findMany({ orderBy:{ createdAt:'desc' }, include }); res.json(posts); }
+export async function createPost(req: Request, res: Response) { const data = z.object({ content:z.string().min(2), tags:z.array(z.string()).default([]) }).parse(req.body); const post = await prisma.post.create({ data:{ authorId:req.user.id, content:data.content, tags:data.tags.join(',') }, include }); res.status(201).json(post); }
+export async function toggleLike(req: Request, res: Response) { const where = { postId_userId:{ postId:req.params.id, userId:req.user.id }}; const existing = await prisma.like.findUnique({ where }); if (existing) await prisma.like.delete({ where }); else await prisma.like.create({ data:{ postId:req.params.id, userId:req.user.id }}); res.json({ ok:true }); }
+export async function addComment(req: Request, res: Response) { const data = z.object({ content:z.string().min(1) }).parse(req.body); const comment = await prisma.comment.create({ data:{ postId:req.params.id, authorId:req.user.id, content:data.content }, include:{ author:{ select:{ id:true,name:true,avatar:true }}}}); res.status(201).json(comment); }
+export async function getComments(req: Request, res: Response) { const comments = await prisma.comment.findMany({ where:{ postId:req.params.id }, include:{ author:{ select:{ id:true,name:true,avatar:true }}}, orderBy:{ createdAt:'asc' }}); res.json(comments); }
